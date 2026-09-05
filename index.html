@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>你是哪一種花錢人格？</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background:
+        radial-gradient(circle at top left, #f8d9cf 0, transparent 30%),
+        radial-gradient(circle at bottom right, #f4dfcf 0, transparent 32%),
+        #fff7f2;
+      color: #4c3834;
+      min-height: 100vh;
+    }
+
+    .app {
+      width: min(100%, 560px);
+      margin: 0 auto;
+      padding: 24px 18px 40px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.92);
+      border: 1px solid #f0c7b9;
+      border-radius: 28px;
+      padding: 28px 22px;
+      box-shadow: 0 14px 40px rgba(130, 85, 70, 0.08);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    h1 {
+      font-size: 34px;
+      line-height: 1.25;
+      margin: 0 0 14px;
+      text-align: center;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #7f6861;
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    .emoji {
+      font-size: 64px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .main-btn {
+      width: 100%;
+      border: none;
+      border-radius: 18px;
+      padding: 16px 20px;
+      font-size: 18px;
+      font-weight: 700;
+      background: #df7d68;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .main-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.03);
+    }
+
+    .progress-wrap {
+      margin-bottom: 26px;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: #8e736b;
+      margin-bottom: 8px;
+    }
+
+    .progress {
+      height: 10px;
+      background: #f3dfd8;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 20%;
+      background: #df7d68;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .question {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.5;
+      margin-bottom: 22px;
+    }
+
+    .answers {
+      display: grid;
+      gap: 12px;
+    }
+
+    .answer {
+      border: 2px solid transparent;
+      border-radius: 18px;
+      padding: 16px;
+      cursor: pointer;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 16px;
+      line-height: 1.5;
+      transition: 0.18s ease;
+      background: white;
+      box-shadow: 0 4px 18px rgba(90, 60, 50, 0.04);
+    }
+
+    .answer:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(90, 60, 50, 0.08);
+    }
+
+    .letter {
+      min-width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: white;
+    }
+
+    .a .letter { background: #df7d68; }
+    .b .letter { background: #be8b3b; }
+    .c .letter { background: #6fa99c; }
+    .d .letter { background: #8d70a8; }
+
+    .a { border-color: #f0c8bd; }
+    .b { border-color: #ead3a9; }
+    .c { border-color: #bedbd4; }
+    .d { border-color: #d8c6e5; }
+
+    .result-title {
+      text-align: center;
+      font-size: 30px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .result-type {
+      font-size: 80px;
+      text-align: center;
+      font-weight: 900;
+      margin: 20px 0;
+    }
+
+    .result-code {
+      text-align: center;
+      font-size: 18px;
+      letter-spacing: 2px;
+      margin-bottom: 22px;
+      background: #fff2ec;
+      padding: 12px;
+      border-radius: 14px;
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .score {
+      border-radius: 16px;
+      padding: 14px 8px;
+      text-align: center;
+      background: #faf3ef;
+      font-size: 14px;
+    }
+
+    .score strong {
+      display: block;
+      font-size: 24px;
+      margin-top: 4px;
+    }
+
+    .cta-box {
+      background: linear-gradient(135deg, #ffe8de, #fff3ec);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      margin: 22px 0;
+      line-height: 1.7;
+    }
+
+    .cta-box strong {
+      font-size: 20px;
+    }
+
+    .secondary-btn {
+      width: 100%;
+      border: 2px solid #df7d68;
+      border-radius: 18px;
+      padding: 14px 20px;
+      font-size: 16px;
+      font-weight: 700;
+      background: white;
+      color: #cf6d59;
+      cursor: pointer;
+    }
+
+    @media (max-width: 420px) {
+      h1 {
+        font-size: 29px;
+      }
+
+      .question {
+        font-size: 21px;
+      }
+
+      .card {
+        padding: 24px 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="app">
+
+    <section id="startScreen" class="card">
+      <div class="emoji">🛍️</div>
+      <h1>你是哪一種花錢人格？</h1>
+      <div class="subtitle">
+        5 題測出你的消費慣性<br>
+        憑第一直覺選，別想太久 👀
+      </div>
+      <button class="main-btn" onclick="startQuiz()">開始測驗</button>
+    </section>
+
+    <section id="quizScreen" class="card hidden">
+
+      <div class="progress-wrap">
+        <div class="progress-info">
+          <span id="progressText">第 1 題</span>
+          <span id="progressPercent">20%</span>
+        </div>
+        <div class="progress">
+          <div id="progressBar" class="progress-bar"></div>
+        </div>
+      </div>
+
+      <div id="questionText" class="question"></div>
+
+      <div id="answers" class="answers"></div>
+
+    </section>
+
+    <section id="resultScreen" class="card hidden">
+
+      <div class="result-title">你的結果出爐了 ✨</div>
+
+      <div id="resultType" class="result-type">C</div>
+
+      <div id="resultCode" class="result-code"></div>
+
+      <div class="score-grid">
+        <div class="score">A<strong id="scoreA">0</strong></div>
+        <div class="score">B<strong id="scoreB">0</strong></div>
+        <div class="score">C<strong id="scoreC">0</strong></div>
+        <div class="score">D<strong id="scoreD">0</strong></div>
+      </div>
+
+      <div class="cta-box">
+        <strong>先不要急著查答案 👀</strong><br><br>
+        截圖這個畫面傳給我<br>
+        我來告訴你是哪一種花錢人格 💌
+      </div>
+
+      <button class="secondary-btn" onclick="restartQuiz()">
+        再測一次
+      </button>
+
+    </section>
+
+  </main>
+
+  <script>
+    const questions = [
+      {
+        question: "看到喜歡的東西時，你通常會？",
+        answers: [
+          ["A", "先買再說，錯過更難受"],
+          ["B", "先比價，確定划算才買"],
+          ["C", "先看品質、成分和評價"],
+          ["D", "先問信任的人值不值得買"]
+        ]
+      },
+      {
+        question: "群組突然出現限時優惠，你的第一個反應是？",
+        answers: [
+          ["A", "剩最後幾組？先搶再說"],
+          ["B", "先算算看，真的有比較便宜嗎？"],
+          ["C", "先確認自己需不需要、適不適合"],
+          ["D", "先看看是誰推薦、大家用得怎麼樣"]
+        ]
+      },
+      {
+        question: "買完東西後，哪種情況最常發生在你身上？",
+        answers: [
+          ["A", "買的時候很興奮，過幾天就忘了"],
+          ["B", "因為優惠多買，結果囤了很久"],
+          ["C", "挑選很久才買，但通常比較少踩雷"],
+          ["D", "別人說很好用，買回來才發現不適合"]
+        ]
+      },
+      {
+        question: "面對完全不熟悉的商品，你通常會？",
+        answers: [
+          ["A", "看起來喜歡，就願意試一次"],
+          ["B", "先找價格最划算的平台"],
+          ["C", "先研究成分、來源與商品資料"],
+          ["D", "找用過或值得信任的人詢問"]
+        ]
+      },
+      {
+        question: "以下哪句話最像你？",
+        answers: [
+          ["A", "喜歡最重要，錢可以再賺"],
+          ["B", "能省為什麼不省？"],
+          ["C", "我不一定買最便宜，但一定要買對"],
+          ["D", "有人替我把關，買起來比較安心"]
+        ]
+      }
+    ];
+
+    let currentQuestion = 0;
+    let userAnswers = [];
+
+    function startQuiz() {
+      document.getElementById("startScreen").classList.add("hidden");
+      document.getElementById("quizScreen").classList.remove("hidden");
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = questions[currentQuestion];
+
+      document.getElementById("questionText").textContent = q.question;
+
+      const answersContainer = document.getElementById("answers");
+      answersContainer.innerHTML = "";
+
+      q.answers.forEach(([letter, text]) => {
+        const button = document.createElement("div");
+
+        button.className = `answer ${letter.toLowerCase()}`;
+
+        button.innerHTML = `
+          <div class="letter">${letter}</div>
+          <div>${text}</div>
+        `;
+
+        button.onclick = () => selectAnswer(letter);
+
+        answersContainer.appendChild(button);
+      });
+
+      const progress = ((currentQuestion + 1) / questions.length) * 100;
+
+      document.getElementById("progressText").textContent =
+        `第 ${currentQuestion + 1} 題 / ${questions.length} 題`;
+
+      document.getElementById("progressPercent").textContent =
+        `${Math.round(progress)}%`;
+
+      document.getElementById("progressBar").style.width =
+        `${progress}%`;
+    }
+
+    function selectAnswer(letter) {
+      userAnswers.push(letter);
+
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById("quizScreen").classList.add("hidden");
+      document.getElementById("resultScreen").classList.remove("hidden");
+
+      const counts = {
+        A: 0,
+        B: 0,
+        C: 0,
+        D: 0
+      };
+
+      userAnswers.forEach(answer => {
+        counts[answer]++;
+      });
+
+      let highest = "A";
+
+      ["B", "C", "D"].forEach(letter => {
+        if (counts[letter] > counts[highest]) {
+          highest = letter;
+        }
+      });
+
+      document.getElementById("resultType").textContent = highest;
+
+      document.getElementById("resultCode").textContent =
+        "你的答案：" + userAnswers.join("・");
+
+      document.getElementById("scoreA").textContent = counts.A;
+      document.getElementById("scoreB").textContent = counts.B;
+      document.getElementById("scoreC").textContent = counts.C;
+      document.getElementById("scoreD").textContent = counts.D;
+    }
+
+    function restartQuiz() {
+      currentQuestion = 0;
+      userAnswers = [];
+
+      document.getElementById("resultScreen").classList.add("hidden");
+      document.getElementById("startScreen").classList.remove("hidden");
+    }
+  </script>
+
+</body>
+</html>
