@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>你是哪一種花錢人格？</title>
 
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -28,7 +30,7 @@
     }
 
     .card {
-      background: rgba(255,255,255,0.92);
+      background: rgba(255, 255, 255, 0.95);
       border: 1px solid #f0c7b9;
       border-radius: 28px;
       padding: 28px 22px;
@@ -59,22 +61,32 @@
       margin-bottom: 10px;
     }
 
-    .main-btn {
+    .main-btn,
+    .secondary-btn {
       width: 100%;
-      border: none;
       border-radius: 18px;
       padding: 16px 20px;
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
-      background: #df7d68;
-      color: white;
       cursor: pointer;
       transition: 0.2s;
     }
 
-    .main-btn:hover {
+    .main-btn {
+      border: none;
+      background: #df7d68;
+      color: white;
+    }
+
+    .secondary-btn {
+      border: 2px solid #df7d68;
+      background: white;
+      color: #cf6d59;
+    }
+
+    .main-btn:hover,
+    .secondary-btn:hover {
       transform: translateY(-2px);
-      filter: brightness(1.03);
     }
 
     .progress-wrap {
@@ -168,7 +180,14 @@
       font-size: 80px;
       text-align: center;
       font-weight: 900;
-      margin: 20px 0;
+      margin: 20px 0 12px;
+    }
+
+    .result-label {
+      text-align: center;
+      color: #8e736b;
+      font-size: 15px;
+      margin-bottom: 18px;
     }
 
     .result-code {
@@ -215,16 +234,42 @@
       font-size: 20px;
     }
 
-    .secondary-btn {
-      width: 100%;
-      border: 2px solid #df7d68;
-      border-radius: 18px;
-      padding: 14px 20px;
-      font-size: 16px;
-      font-weight: 700;
+    .button-group {
+      display: grid;
+      gap: 12px;
+    }
+
+    .capture-card {
       background: white;
-      color: #cf6d59;
-      cursor: pointer;
+      border-radius: 24px;
+      padding: 8px;
+    }
+
+    .capture-note {
+      text-align: center;
+      color: #9a7d75;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 28px;
+      transform: translateX(-50%);
+      background: #4c3834;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+      z-index: 9999;
+    }
+
+    .toast.show {
+      opacity: 1;
     }
 
     @media (max-width: 420px) {
@@ -239,12 +284,15 @@
       .card {
         padding: 24px 18px;
       }
+
+      .result-type {
+        font-size: 68px;
+      }
     }
   </style>
 </head>
 
 <body>
-
   <main class="app">
 
     <section id="startScreen" class="card">
@@ -258,51 +306,63 @@
     </section>
 
     <section id="quizScreen" class="card hidden">
-
       <div class="progress-wrap">
         <div class="progress-info">
           <span id="progressText">第 1 題</span>
           <span id="progressPercent">20%</span>
         </div>
+
         <div class="progress">
           <div id="progressBar" class="progress-bar"></div>
         </div>
       </div>
 
       <div id="questionText" class="question"></div>
-
       <div id="answers" class="answers"></div>
-
     </section>
 
     <section id="resultScreen" class="card hidden">
 
-      <div class="result-title">你的結果出爐了 ✨</div>
+      <div id="captureArea" class="capture-card">
+        <div class="result-title">你的結果出爐了 ✨</div>
 
-      <div id="resultType" class="result-type">C</div>
+        <div id="resultType" class="result-type">C</div>
+        <div class="result-label">你的主要類型</div>
 
-      <div id="resultCode" class="result-code"></div>
+        <div id="resultCode" class="result-code"></div>
 
-      <div class="score-grid">
-        <div class="score">A<strong id="scoreA">0</strong></div>
-        <div class="score">B<strong id="scoreB">0</strong></div>
-        <div class="score">C<strong id="scoreC">0</strong></div>
-        <div class="score">D<strong id="scoreD">0</strong></div>
+        <div class="score-grid">
+          <div class="score">A<strong id="scoreA">0</strong></div>
+          <div class="score">B<strong id="scoreB">0</strong></div>
+          <div class="score">C<strong id="scoreC">0</strong></div>
+          <div class="score">D<strong id="scoreD">0</strong></div>
+        </div>
+
+        <div class="cta-box">
+          <strong>先別急著查答案 👀</strong><br><br>
+          把這張結果圖傳給我<br>
+          我來告訴你是哪一種花錢人格 💌
+        </div>
       </div>
 
-      <div class="cta-box">
-        <strong>先不要急著查答案 👀</strong><br><br>
-        截圖這個畫面傳給我<br>
-        我來告訴你是哪一種花錢人格 💌
+      <div class="button-group">
+        <button class="main-btn" onclick="downloadResultImage()">
+          📸 產生結果圖
+        </button>
+
+        <button class="secondary-btn" onclick="restartQuiz()">
+          再測一次
+        </button>
       </div>
 
-      <button class="secondary-btn" onclick="restartQuiz()">
-        再測一次
-      </button>
-
+      <div class="capture-note">
+        按下「產生結果圖」後，圖片會自動下載到你的裝置
+      </div>
     </section>
 
   </main>
+
+  <div id="toast" class="toast">結果圖已產生 ✨</div>
 
   <script>
     const questions = [
@@ -360,6 +420,7 @@
       document.getElementById("startScreen").classList.add("hidden");
       document.getElementById("quizScreen").classList.remove("hidden");
       renderQuestion();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     function renderQuestion() {
@@ -374,14 +435,12 @@
         const button = document.createElement("div");
 
         button.className = `answer ${letter.toLowerCase()}`;
-
         button.innerHTML = `
           <div class="letter">${letter}</div>
           <div>${text}</div>
         `;
 
         button.onclick = () => selectAnswer(letter);
-
         answersContainer.appendChild(button);
       });
 
@@ -432,7 +491,6 @@
       });
 
       document.getElementById("resultType").textContent = highest;
-
       document.getElementById("resultCode").textContent =
         "你的答案：" + userAnswers.join("・");
 
@@ -440,6 +498,48 @@
       document.getElementById("scoreB").textContent = counts.B;
       document.getElementById("scoreC").textContent = counts.C;
       document.getElementById("scoreD").textContent = counts.D;
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function downloadResultImage() {
+      const area = document.getElementById("captureArea");
+      const button = document.querySelector(
+        'button[onclick="downloadResultImage()"]'
+      );
+
+      const originalText = button.textContent;
+      button.textContent = "正在產生結果圖...";
+      button.disabled = true;
+
+      try {
+        const canvas = await html2canvas(area, {
+          scale: 2,
+          backgroundColor: "#fff7f2",
+          useCORS: true
+        });
+
+        const link = document.createElement("a");
+        link.download = "花錢人格測驗結果.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+
+        showToast();
+      } catch (error) {
+        alert("圖片產生失敗，請直接使用手機截圖。");
+      } finally {
+        button.textContent = originalText;
+        button.disabled = false;
+      }
+    }
+
+    function showToast() {
+      const toast = document.getElementById("toast");
+      toast.classList.add("show");
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 1800);
     }
 
     function restartQuiz() {
@@ -448,8 +548,9 @@
 
       document.getElementById("resultScreen").classList.add("hidden");
       document.getElementById("startScreen").classList.remove("hidden");
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   </script>
-
 </body>
 </html>
